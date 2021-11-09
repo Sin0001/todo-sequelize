@@ -1,6 +1,9 @@
-const bodyParser = require('body-parser')
 const express = require('express') // 載入 express
+const session = require('express-session') // 載入 express-session
+const usePassport = require('./config/passport')
+const passport = require('passport')
 const exphbs = require('express-handlebars') //載入 handelbars
+const bodyParser = require('body-parser')
 const methodOverride = require('method-override') // 載入 method-override 
 const bcrypt = require('bcryptjs') // 載入 bcryptjs
 
@@ -15,8 +18,17 @@ const User = db.User
 app.engine('hbs', exphbs({defaultLayout: 'main', extname: '.hbs'}))
 app.set('view engine', 'hbs')
 
+app.use(session({
+  secret: 'ThisIsMySecret',
+  resave: false,
+  saveUninitialized: true
+}))
+
 app.use(bodyParser.urlencoded({ extended: true })) // 使用 body-parser
 app.use(methodOverride('_method')) // 使用 method-override
+
+
+usePassport(app)
 
 // 設定 routes
 // 瀏覽首頁
@@ -43,9 +55,10 @@ app.get('/users/login', (req, res) => {
 })
 
 // 送出登入
-app.post('/users/login', (req, res) => {
-  res.send('login')
-})
+app.post('/users/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/users/login'
+}))
 
 // 註冊頁面
 app.get('/users/register', (req, res) => {
