@@ -5,6 +5,7 @@ const passport = require('passport')
 const exphbs = require('express-handlebars') //載入 handelbars
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override') // 載入 method-override 
+const flash = require('connect-flash')
 const routes = require('./routes')
 
 const app = express()
@@ -25,9 +26,12 @@ app.use(methodOverride('_method')) // 使用 method-override
 
 usePassport(app)
 
+app.use(flash())
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated()
   res.locals.user = req.user
+  res.locals.success_msg = req.flash('success_msg')
+  res.locals.warning_msg = req.flash('warning_msg')
   next()
 })
 
