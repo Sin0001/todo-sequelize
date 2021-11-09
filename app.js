@@ -1,22 +1,27 @@
 const express = require('express') // 載入 express
 const session = require('express-session') // 載入 express-session
-const usePassport = require('./config/passport')
-const passport = require('passport')
 const exphbs = require('express-handlebars') //載入 handelbars
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override') // 載入 method-override 
 const flash = require('connect-flash')
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const routes = require('./routes')
 
+const usePassport = require('./config/passport')
+
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT
 
 // 設定hbs
 app.engine('hbs', exphbs({defaultLayout: 'main', extname: '.hbs'}))
 app.set('view engine', 'hbs')
 
 app.use(session({
-  secret: 'ThisIsMySecret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
 }))
