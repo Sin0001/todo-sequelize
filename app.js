@@ -29,6 +29,14 @@ app.get('/', (req, res) => {
     .catch((error) => { return res.status(422).json(error) })
 })
 
+// 瀏覽特定todo
+app.get('/todos/:id', (req, res) => {
+  const id = req.params.id
+  return Todo.findByPk(id)
+    .then(todo => res.render('detail', { todo: todo.toJSON() }))
+    .catch(error => console.log(error))
+})
+
 // 登入頁面
 app.get('/users/login', (req, res) => {
   res.render('login')
