@@ -21,7 +21,12 @@ app.use(methodOverride('_method')) // 使用 method-override
 // 設定 routes
 // 瀏覽首頁
 app.get('/', (req, res) => {
-  res.send(`hello word!`)
+  return Todo.findAll({
+    raw: true,
+    nest: true
+  })
+    .then((todos) => { return res.render('index', { todos: todos }) })
+    .catch((error) => { return res.status(422).json(error) })
 })
 
 // 登入頁面
