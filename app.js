@@ -23,8 +23,13 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: true })) // 使用 body-parser
 app.use(methodOverride('_method')) // 使用 method-override
 
-
 usePassport(app)
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated()
+  res.locals.user = req.user
+  next()
+})
 
 // 設定 routes
 app.use(routes)
